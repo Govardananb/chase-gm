@@ -62,11 +62,10 @@ export default function PublicView() {
         {activeTab === 'results'  && <Results />}
       </main>
 
-      <footer style={{ marginTop: '48px', paddingTop: '20px', borderTop: '1px solid var(--border-color)', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.8rem', display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '12px' }}>
-        <span>Chase GM · Chess League Manager</span>
-        <span style={{ opacity: 0.3 }}>|</span>
-        <a href="/admin" style={{ color: 'var(--text-secondary)', textDecoration: 'none', transition: 'color 0.2s' }} onMouseOver={e => e.currentTarget.style.color = 'var(--primary)'} onMouseOut={e => e.currentTarget.style.color = 'var(--text-secondary)'}>Admin Login</a>
+      <footer style={{ marginTop: '48px', paddingTop: '20px', borderTop: '1px solid var(--border-color)', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.86rem', opacity: 0.6 }}>
+        Chase GM · Chess League Manager
       </footer>
+
 
     </div>
   );
