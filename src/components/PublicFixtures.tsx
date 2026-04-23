@@ -1,6 +1,6 @@
 import { useFirebaseSync } from '../hooks/useFirebaseSync';
 import type { Team, Fixture } from '../types';
-import { CheckCircle, Clock, Flag, Layout } from 'lucide-react';
+import { Flag, Layout } from 'lucide-react';
 
 export default function PublicFixtures() {
   const [teams] = useFirebaseSync<Team[]>('chase_gm_teams', []);
@@ -49,7 +49,6 @@ export default function PublicFixtures() {
                 if (!teamA || !teamB) return null;
 
                 const boards = fixture.boardResults || [];
-                const done = boards.filter(b => b.result !== '*').length;
 
                 let aScore = 0, bScore = 0;
                 boards.forEach(b => {
