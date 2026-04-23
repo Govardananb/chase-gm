@@ -97,7 +97,7 @@ export default function PointsTable() {
                 <tr>
                   <th style={{ width: '40px', textAlign: 'center' }}><Hash size={12} /></th>
                   <th style={{ minWidth: '130px' }}><div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Users size={12} /> TEAM</div></th>
-                  <th style={{ textAlign: 'center', minWidth: '60px' }} title="Total Individual Matches Played">MTCHS</th>
+                  <th style={{ textAlign: 'center' }} title="Total Individual Matches Played">M</th>
                   <th style={{ textAlign: 'center', color: 'var(--success)' }}>W</th>
                   <th style={{ textAlign: 'center', color: 'var(--warning)' }}>D</th>
                   <th style={{ textAlign: 'center', color: 'var(--danger)' }}>L</th>
