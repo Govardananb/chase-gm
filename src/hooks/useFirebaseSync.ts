@@ -63,10 +63,13 @@ export function useFirebaseSync<T>(key: string, initialValue: T) {
       
       window.localStorage.setItem(key, JSON.stringify(valueToStore));
 
-      const docRef = doc(db, 'app_state', key);
-      setDoc(docRef, { value: valueToStore }).catch(e => {
-        alert(`❌ Database Sync Failed: ${e.message}`);
-      });
+      if (db) {
+        const docRef = doc(db, 'app_state', key);
+        setDoc(docRef, { value: valueToStore }).catch(e => {
+          alert(`❌ Database Sync Failed: ${e.message}`);
+        });
+      }
+
 
       return valueToStore;
     });
