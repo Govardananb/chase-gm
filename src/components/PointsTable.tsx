@@ -5,7 +5,7 @@ import { Trophy, Hash, Users, Activity, Award } from 'lucide-react';
 interface TeamStats {
   teamId: string;
   teamName: string;
-  fixturesPlayed: number; 
+  totalGames: number;    // Changed from fixturesPlayed to count individual board games
   wins: number;
   draws: number;
   losses: number;
@@ -23,7 +23,7 @@ export default function PointsTable() {
     const statsMap: Record<string, TeamStats> = {};
 
     safeTeams.forEach(t => {
-      statsMap[t.id] = { teamId: t.id, teamName: t.name, fixturesPlayed: 0, wins: 0, draws: 0, losses: 0, pts: 0 };
+      statsMap[t.id] = { teamId: t.id, teamName: t.name, totalGames: 0, wins: 0, draws: 0, losses: 0, pts: 0 };
     });
 
     safeFixtures.forEach(fixture => {
@@ -32,12 +32,6 @@ export default function PointsTable() {
       if (!teamA || !teamB) return;
 
       const boards = fixture.boardResults || [];
-      const hasPlayedAny = boards.some(b => b.result !== '*');
-      
-      if (hasPlayedAny) {
-        if (statsMap[fixture.teamAId]) statsMap[fixture.teamAId].fixturesPlayed += 1;
-        if (statsMap[fixture.teamBId]) statsMap[fixture.teamBId].fixturesPlayed += 1;
-      }
 
       boards.forEach(board => {
         if (board.result === '*') return;
@@ -47,6 +41,10 @@ export default function PointsTable() {
         if (!sA || !sB) return;
 
         const p1IsTeamA = teamA.players.some(p => p.name === board.player1);
+
+        // Increment total games for both teams involved in this individual board
+        sA.totalGames += 1;
+        sB.totalGames += 1;
 
         if (board.result === '1/2-1/2') {
           sA.draws += 1; sB.draws += 1;
@@ -79,7 +77,7 @@ export default function PointsTable() {
         <div style={{ marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
             <div style={{ background: 'var(--primary)', padding: '8px', borderRadius: '10px' }}>
-              <Trophy size={20} color="white" />
+              < Trophy size={20} color="white" />
             </div>
             <h2 style={{ fontSize: 'clamp(1.15rem, 5vw, 1.5rem)', margin: 0 }}>League Standings</h2>
           </div>
@@ -100,7 +98,7 @@ export default function PointsTable() {
                 <tr>
                   <th style={{ width: '40px', textAlign: 'center' }}><Hash size={12} /></th>
                   <th style={{ minWidth: '130px' }}><div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Users size={12} /> TEAM</div></th>
-                  <th style={{ textAlign: 'center' }} title="Matches (Sets) Played"><Award size={12} /> M</th>
+                  <th style={{ textAlign: 'center' }} title="Total Individual Matches Played"><Award size={12} /> M</th>
                   <th style={{ textAlign: 'center', color: 'var(--success)' }}>W</th>
                   <th style={{ textAlign: 'center', color: 'var(--warning)' }}>D</th>
                   <th style={{ textAlign: 'center', color: 'var(--danger)' }}>L</th>
@@ -118,7 +116,7 @@ export default function PointsTable() {
                       <td>
                         <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{stat.teamName}</div>
                       </td>
-                      <td style={{ textAlign: 'center', color: 'var(--text-secondary)', fontWeight: 600 }}>{stat.fixturesPlayed}</td>
+                      <td style={{ textAlign: 'center', color: 'var(--text-secondary)', fontWeight: 600 }}>{stat.totalGames}</td>
                       <td style={{ textAlign: 'center', color: 'var(--success)', fontWeight: 600 }}>{stat.wins}</td>
                       <td style={{ textAlign: 'center', color: 'var(--warning)', fontWeight: 600 }}>{stat.draws}</td>
                       <td style={{ textAlign: 'center', color: 'var(--danger)', fontWeight: 600 }}>{stat.losses}</td>
