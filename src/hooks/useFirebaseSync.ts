@@ -19,7 +19,10 @@ export function useFirebaseSync<T>(key: string, initialValue: T) {
     const docRef = doc(db, 'app_state', key);
 
     // Subscribe to realtime updates
-    const unsubscribe = onSnapshot(docRef, (snapshot) => {
+    const unsubscribe = onSnapshot(docRef, { includeMetadataChanges: true }, (snapshot) => {
+      // If we have pending local writes, don't let the server snapshot overwrite our optimistic UI
+      if (snapshot.metadata.hasPendingWrites) return;
+
       if (snapshot.exists()) {
         const val = snapshot.data()?.value as T;
         setData(val);
