@@ -1,6 +1,6 @@
 import { useFirebaseSync } from '../hooks/useFirebaseSync';
 import type { Team, Fixture } from '../types';
-import { CheckCircle, Clock2, Swords, History } from 'lucide-react';
+import { History } from 'lucide-react';
 
 export default function Results() {
   const [teams] = useFirebaseSync<Team[]>('chase_gm_teams', []);

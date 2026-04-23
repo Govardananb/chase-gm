@@ -1,6 +1,6 @@
 import { useFirebaseSync } from '../hooks/useFirebaseSync';
 import type { Team, Fixture } from '../types';
-import { Trophy, Hash, Users, Swords, Activity, Award } from 'lucide-react';
+import { Trophy, Hash, Users, Activity, Award } from 'lucide-react';
 
 interface TeamStats {
   teamId: string;
@@ -75,19 +75,16 @@ export default function PointsTable() {
 
   return (
     <div className="animate-fade-in">
-      <div className="glass-panel" style={{ padding: 'clamp(1.25rem, 4vw, 2.5rem)', borderTop: '4px solid var(--primary)' }}>
-        <div style={{ marginBottom: '32px' }}>
+      <div className="glass-panel" style={{ padding: 'clamp(1rem, 4vw, 2.5rem)', borderTop: '4px solid var(--primary)' }}>
+        <div style={{ marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
-            <div style={{ background: 'var(--primary)', padding: '10px', borderRadius: '12px' }}>
-              <Trophy size={24} color="white" />
+            <div style={{ background: 'var(--primary)', padding: '8px', borderRadius: '10px' }}>
+              <Trophy size={20} color="white" />
             </div>
-            <h2 style={{ fontSize: 'clamp(1.25rem, 5vw, 1.75rem)', margin: 0 }}>League Standings</h2>
+            <h2 style={{ fontSize: 'clamp(1.15rem, 5vw, 1.5rem)', margin: 0 }}>League Standings</h2>
           </div>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-            Live ranking based on individual board performance. 
-            <span style={{ marginLeft: '12px', padding: '2px 8px', borderRadius: '4px', background: 'rgba(255,255,255,0.05)', fontSize: '0.75rem' }}>
-              Win 2pts · Draw 1pt · Loss 0pts
-            </span>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
+            Live ranking based on individual board performance.
           </p>
         </div>
 
@@ -101,14 +98,14 @@ export default function PointsTable() {
             <table className="data-table">
               <thead>
                 <tr>
-                  <th style={{ width: '60px', textAlign: 'center' }}><Hash size={14} /></th>
-                  <th><div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}><Users size={14} /> TEAM</div></th>
-                  <th className="hide-mobile" style={{ textAlign: 'center' }}><Award size={14} /> MAT</th>
-                  <th className="hide-mobile" style={{ textAlign: 'center' }}>GMS</th>
-                  <th className="hide-mobile" style={{ textAlign: 'center', color: 'var(--success)' }}>W</th>
-                  <th className="hide-mobile" style={{ textAlign: 'center', color: 'var(--warning)' }}>D</th>
-                  <th className="hide-mobile" style={{ textAlign: 'center', color: 'var(--danger)' }}>L</th>
-                  <th style={{ textAlign: 'center', paddingRight: '24px' }}>POINTS</th>
+                  <th style={{ width: '40px', textAlign: 'center' }}><Hash size={12} /></th>
+                  <th style={{ minWidth: '100px' }}><div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Users size={12} /> TEAM</div></th>
+                  <th style={{ textAlign: 'center' }} title="Matches Playes"><Award size={12} /> M</th>
+                  <th style={{ textAlign: 'center' }}>G</th>
+                  <th style={{ textAlign: 'center', color: 'var(--success)' }}>W</th>
+                  <th style={{ textAlign: 'center', color: 'var(--warning)' }}>D</th>
+                  <th style={{ textAlign: 'center', color: 'var(--danger)' }}>L</th>
+                  <th style={{ textAlign: 'center', color: 'var(--primary)', borderLeft: '1px solid var(--border-color)', fontWeight: 800 }}>PTS</th>
                 </tr>
               </thead>
               <tbody>
@@ -117,30 +114,21 @@ export default function PointsTable() {
                   return (
                     <tr key={stat.teamId} style={{ background: isTop ? 'rgba(79, 70, 229, 0.05)' : 'transparent' }}>
                       <td style={{ textAlign: 'center' }}>
-                        {isTop ? (
-                          <span style={{ fontSize: '1.2rem' }}>🥇</span>
-                        ) : (
-                          <span style={{ color: index < 3 ? 'var(--text-primary)' : 'var(--text-secondary)', fontWeight: 600 }}>
-                            {index + 1}
-                          </span>
-                        )}
+                        {isTop ? '🥇' : <span style={{ color: 'var(--text-secondary)', fontWeight: 600 }}>{index + 1}</span>}
                       </td>
                       <td>
-                        <div style={{ fontWeight: 700, letterSpacing: '-0.01em' }}>{stat.teamName}</div>
+                        <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{stat.teamName}</div>
                       </td>
-                      <td className="hide-mobile" style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>{stat.fixturesPlayed}</td>
-                      <td className="hide-mobile" style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>{stat.played}</td>
-                      <td className="hide-mobile" style={{ textAlign: 'center', color: 'var(--success)', fontWeight: 600 }}>{stat.wins}</td>
-                      <td className="hide-mobile" style={{ textAlign: 'center', color: 'var(--warning)', fontWeight: 600 }}>{stat.draws}</td>
-                      <td className="hide-mobile" style={{ textAlign: 'center', color: 'var(--danger)', fontWeight: 600 }}>{stat.losses}</td>
-                      <td style={{ textAlign: 'center', paddingRight: '24px' }}>
+                      <td style={{ textAlign: 'center', color: 'var(--text-primary)', fontWeight: 600 }}>{stat.fixturesPlayed}</td>
+                      <td style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>{stat.played}</td>
+                      <td style={{ textAlign: 'center', color: 'var(--success)', fontWeight: 600 }}>{stat.wins}</td>
+                      <td style={{ textAlign: 'center', color: 'var(--warning)', fontWeight: 600 }}>{stat.draws}</td>
+                      <td style={{ textAlign: 'center', color: 'var(--danger)', fontWeight: 600 }}>{stat.losses}</td>
+                      <td style={{ textAlign: 'center', borderLeft: '1px solid var(--border-color)' }}>
                         <span style={{ 
-                          fontSize: '1.25rem', 
+                          fontSize: '1rem', 
                           fontWeight: 800, 
                           color: isTop ? 'var(--primary)' : 'var(--text-primary)',
-                          background: isTop ? 'rgba(79, 70, 229, 0.1)' : 'transparent',
-                          padding: '4px 12px',
-                          borderRadius: '8px'
                         }}>
                           {stat.pts}
                         </span>

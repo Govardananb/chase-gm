@@ -224,13 +224,18 @@ h1, h2, h3, h4 {
   }
   
   .data-table th, .data-table td {
-    padding: 14px 10px;
+    padding: 12px 6px;
+    font-size: 0.7rem;
   }
 
-  .hide-mobile {
-    display: none;
+  .data-table td:nth-child(2) {
+    max-width: 110px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 }
+
 
 .animate-fade-in {
   animation: fadeIn 0.4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
