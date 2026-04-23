@@ -1,11 +1,11 @@
 import { useState } from 'react';
 import { useFirebaseSync } from '../hooks/useFirebaseSync';
 import type { Team, Fixture, BoardResult } from '../types';
-import { Calendar, CheckCircle, Clock, Plus, Trash2, Swords, ChevronDown, User } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, Plus, Trash2, Swords, User, Loader2 } from 'lucide-react';
 
 export default function FixtureManager() {
-  const [teams] = useFirebaseSync<Team[]>('chase_gm_teams', []);
-  const [fixtures, setFixtures] = useFirebaseSync<Fixture[]>('chase_gm_fixtures', []);
+  const [teams, , loadingTeams] = useFirebaseSync<Team[]>('chase_gm_teams', []);
+  const [fixtures, setFixtures, loadingFixtures] = useFirebaseSync<Fixture[]>('chase_gm_fixtures', []);
   
   const [setNum, setSetNum] = useState('1');
   const [teamAId, setTeamAId] = useState('');
@@ -14,6 +14,7 @@ export default function FixtureManager() {
 
   const handleCreateFixture = (e: React.FormEvent) => {
     e.preventDefault();
+    if (loadingTeams) return;
     if (!teamAId || !teamBId || teamAId === teamBId) {
       alert("Please select two different teams.");
       return;
@@ -75,6 +76,10 @@ export default function FixtureManager() {
   };
 
   const updateBoard = (fixture: Fixture, gameId: string, field: keyof BoardResult, value: string) => {
+    if (loadingTeams) {
+      alert("Teams are still loading. Please wait a moment.");
+      return;
+    }
     const updatedBoards = fixture.boardResults?.map(b => b.gameId === gameId ? { ...b, [field]: value } : b) || [];
     setFixtures((fixtures || []).map(f => {
       if (f.id === fixture.id) {
@@ -89,6 +94,14 @@ export default function FixtureManager() {
     let teamBScore = 0;
 
     const teamA = (teams || []).find(t => t.id === fixture.teamAId);
+
+    // CRITICAL FIX: If teams list is empty/loading, do NOT overwrite scores with 0.
+    // Preserve existing scores until the team roster is confirmed.
+    if (!teamA && teams.length > 0) {
+       // Only if teams have loaded and we STILL can't find team A, then it's a real 0.
+       // But if teams.length is 0, we can't trust the calculation.
+       return { ...fixture, boardResults: boards };
+    }
 
     if (teamA) {
       boards.forEach(b => {
@@ -108,6 +121,15 @@ export default function FixtureManager() {
 
     return { ...fixture, boardResults: boards, teamAScore, teamBScore };
   };
+
+  if (loadingTeams || loadingFixtures) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '300px', gap: '16px' }}>
+        <Loader2 size={40} className="animate-spin" color="var(--primary)" />
+        <p style={{ color: 'var(--text-secondary)' }}>Synchronizing Database...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="animate-fade-in">
