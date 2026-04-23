@@ -1,11 +1,11 @@
 import { useFirebaseSync } from '../hooks/useFirebaseSync';
 import type { Team, Fixture } from '../types';
-import { Trophy, Hash, Users, Activity, Award } from 'lucide-react';
+import { Trophy, Hash, Users, Activity } from 'lucide-react';
 
 interface TeamStats {
   teamId: string;
   teamName: string;
-  totalGames: number;    // Changed from fixturesPlayed to count individual board games
+  totalGames: number;    
   wins: number;
   draws: number;
   losses: number;
@@ -42,7 +42,6 @@ export default function PointsTable() {
 
         const p1IsTeamA = teamA.players.some(p => p.name === board.player1);
 
-        // Increment total games for both teams involved in this individual board
         sA.totalGames += 1;
         sB.totalGames += 1;
 
@@ -77,7 +76,7 @@ export default function PointsTable() {
         <div style={{ marginBottom: '24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '8px' }}>
             <div style={{ background: 'var(--primary)', padding: '8px', borderRadius: '10px' }}>
-              < Trophy size={20} color="white" />
+              <Trophy size={20} color="white" />
             </div>
             <h2 style={{ fontSize: 'clamp(1.15rem, 5vw, 1.5rem)', margin: 0 }}>League Standings</h2>
           </div>
@@ -98,7 +97,7 @@ export default function PointsTable() {
                 <tr>
                   <th style={{ width: '40px', textAlign: 'center' }}><Hash size={12} /></th>
                   <th style={{ minWidth: '130px' }}><div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Users size={12} /> TEAM</div></th>
-                  <th style={{ textAlign: 'center' }} title="Total Individual Matches Played"><Award size={12} /> M</th>
+                  <th style={{ textAlign: 'center', minWidth: '60px' }} title="Total Individual Matches Played">MTCHS</th>
                   <th style={{ textAlign: 'center', color: 'var(--success)' }}>W</th>
                   <th style={{ textAlign: 'center', color: 'var(--warning)' }}>D</th>
                   <th style={{ textAlign: 'center', color: 'var(--danger)' }}>L</th>
