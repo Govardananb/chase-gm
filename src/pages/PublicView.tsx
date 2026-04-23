@@ -1,10 +1,11 @@
 import { useState } from 'react';
-import { Trophy, CalendarDays, Swords, LayoutDashboard } from 'lucide-react';
+import { Trophy, CalendarDays, Swords, LayoutDashboard, Users } from 'lucide-react';
 import PointsTable from '../components/PointsTable';
 import PublicFixtures from '../components/PublicFixtures';
 import Results from '../components/Results';
+import Lineups from '../components/Lineups';
 
-type Tab = 'points' | 'fixtures' | 'results';
+type Tab = 'points' | 'fixtures' | 'results' | 'lineups';
 
 export default function PublicView() {
   const [activeTab, setActiveTab] = useState<Tab>('points');
@@ -13,6 +14,7 @@ export default function PublicView() {
     { id: 'points', label: 'Standings', icon: <Trophy size={18} /> },
     { id: 'fixtures', label: 'Fixtures', icon: <CalendarDays size={18} /> },
     { id: 'results', label: 'Results', icon: <Swords size={18} /> },
+    { id: 'lineups', label: 'Lineups', icon: <Users size={18} /> },
   ];
 
   return (
@@ -60,6 +62,7 @@ export default function PublicView() {
         {activeTab === 'points'   && <PointsTable />}
         {activeTab === 'fixtures' && <PublicFixtures />}
         {activeTab === 'results'  && <Results />}
+        {activeTab === 'lineups'  && <Lineups />}
       </main>
 
       {/* Footer */}
