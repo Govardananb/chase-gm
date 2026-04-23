@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useFirebaseSync } from '../hooks/useFirebaseSync';
 import type { Team, Fixture, BoardResult } from '../types';
-import { Calendar, CheckCircle, Clock, Plus, Trash2, Swords } from 'lucide-react';
+import { Calendar, CheckCircle, Clock, Plus, Trash2, Swords, ChevronDown, User } from 'lucide-react';
 
 export default function FixtureManager() {
   const [teams] = useFirebaseSync<Team[]>('chase_gm_teams', []);
@@ -110,50 +110,53 @@ export default function FixtureManager() {
   };
 
   return (
-    <div>
-      <div className="glass-panel" style={{ padding: 'clamp(1rem, 3vw, 1.5rem)', marginBottom: '32px' }}>
-        <h2 style={{ marginBottom: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+    <div className="animate-fade-in">
+      {/* Create Section */}
+      <div className="glass-panel" style={{ padding: 'clamp(1rem, 3vw, 2rem)', marginBottom: '32px' }}>
+        <h2 style={{ marginBottom: '24px', display: 'flex', alignItems: 'center', gap: '12px' }}>
           <Calendar size={24} color="var(--primary)" /> Schedule Match
         </h2>
-        <form onSubmit={handleCreateFixture} style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(150px, 1fr))', gap: '16px', alignItems: 'end' }}>
+        <form onSubmit={handleCreateFixture} className="admin-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(130px, 1fr))', gap: '16px', alignItems: 'end' }}>
           <div>
-            <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Set Number</label>
+            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px', display: 'block' }}>SET</label>
             <input 
-              type="number" min="1" placeholder="1" className="input-field"
+              type="number" min="1" className="input-field"
               value={setNum} onChange={(e) => setSetNum(e.target.value)} required
             />
           </div>
           <div>
-            <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Team A</label>
+            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px', display: 'block' }}>TEAM A</label>
             <select className="input-field" value={teamAId} onChange={e => setTeamAId(e.target.value)} required>
-              <option value="">Select Team A</option>
+              <option value="">Select</option>
               {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
+          <div style={{ textAlign: 'center', color: 'var(--text-secondary)', fontWeight: 700, paddingBottom: '12px' }}>VS</div>
           <div>
-            <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Team B</label>
+            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px', display: 'block' }}>TEAM B</label>
             <select className="input-field" value={teamBId} onChange={e => setTeamBId(e.target.value)} required>
-              <option value="">Select Team B</option>
+              <option value="">Select</option>
               {teams.map(t => <option key={t.id} value={t.id}>{t.name}</option>)}
             </select>
           </div>
           <div>
-            <label style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', marginBottom: '4px', display: 'block' }}>Date</label>
+            <label style={{ fontSize: '0.75rem', fontWeight: 600, color: 'var(--text-secondary)', marginBottom: '8px', display: 'block' }}>DATE</label>
             <input 
               type="date" className="input-field"
               value={date} onChange={(e) => setDate(e.target.value)}
             />
           </div>
-          <button type="submit" className="btn btn-primary" style={{ height: '45px' }}>
-            <Plus size={18} /> Add Fixture
+          <button type="submit" className="btn btn-primary" style={{ height: '48px' }}>
+            <Plus size={18} /> Schedule
           </button>
         </form>
       </div>
 
+      {/* List Section */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
         {(!fixtures || fixtures.length === 0) ? (
-          <div className="glass-panel" style={{ padding: '40px', textAlign: 'center', color: 'var(--text-secondary)' }}>
-            No fixtures scheduled yet.
+          <div className="glass-panel" style={{ padding: '60px', textAlign: 'center', color: 'var(--text-secondary)' }}>
+            No matches scheduled yet.
           </div>
         ) : (
           fixtures.sort((a,b) => Number(a.set) - Number(b.set)).map(fixture => {
@@ -164,90 +167,78 @@ export default function FixtureManager() {
             const allPlayers = [...teamA.players, ...teamB.players];
 
             return (
-              <div key={fixture.id} className="glass-panel" style={{ padding: 'clamp(1rem, 3vw, 1.5rem)', display: 'flex', flexDirection: 'column' }}>
-                
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px', flexWrap: 'wrap', gap: '12px' }}>
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px', flexWrap: 'wrap' }}>
-                    <span style={{ fontSize: '1.25rem', fontWeight: 700, background: 'rgba(59,130,246,0.1)', color: 'var(--primary)', padding: '4px 12px', borderRadius: '8px' }}>Set {fixture.set}</span>
-                    <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>{fixture.date}</span>
-                    <button onClick={() => toggleStatus(fixture.id)} className="status-badge" style={{ 
-                      border: 'none', cursor: 'pointer', 
-                      background: fixture.status === 'completed' ? 'rgba(16,185,129,0.2)' : 'rgba(255,255,255,0.05)',
-                      color: fixture.status === 'completed' ? 'var(--success)' : 'var(--text-secondary)',
-                      display: 'flex', alignItems: 'center', gap: '4px', padding: '6px 12px'
-                    }}>
-                      {fixture.status === 'completed' ? <><CheckCircle size={14}/> Completed</> : <><Clock size={14}/> Pending</>}
+              <div key={fixture.id} className="glass-panel" style={{ padding: '0' }}>
+                {/* Fixture Header Bar */}
+                <div style={{ padding: '20px 24px', background: 'rgba(255,255,255,0.02)', borderBottom: '1px solid var(--border-color)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '16px' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div style={{ background: 'var(--primary)', color: 'white', padding: '4px 10px', borderRadius: '8px', fontWeight: 800, fontSize: '0.8rem' }}>SET {fixture.set}</div>
+                    <span style={{ fontWeight: 700, fontSize: '1rem' }}>{teamA.name} <span style={{ opacity: 0.3 }}>v</span> {teamB.name}</span>
+                    <button onClick={() => toggleStatus(fixture.id)} style={{ padding: '4px 12px', borderRadius: '8px', border: '1px solid var(--border-color)', color: fixture.status === 'completed' ? 'var(--success)' : 'var(--text-secondary)', fontSize: '0.75rem', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '4px', background: 'rgba(0,0,0,0.2)' }}>
+                      {fixture.status === 'completed' ? <CheckCircle size={14}/> : <Clock size={14}/>}
+                      {fixture.status.toUpperCase()}
                     </button>
                   </div>
-                  <button onClick={() => handleDeleteFixture(fixture.id)} style={{ color: 'var(--danger)', fontSize: '0.875rem' }} className="btn">
-                    <Trash2 size={16} /> Delete Fixture
+                  <button onClick={() => handleDeleteFixture(fixture.id)} style={{ color: 'var(--danger)', fontSize: '0.8rem', fontWeight: 700 }} className="btn-icon">
+                    <Trash2 size={16} />
                   </button>
                 </div>
 
-                <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', padding: '24px', background: 'rgba(0,0,0,0.2)', borderRadius: '12px', margin: '0 0 24px 0', position: 'relative' }}>
-                  <div style={{ flex: 1, textAlign: 'right', fontSize: 'clamp(1.1rem, 4vw, 1.5rem)', fontWeight: 700 }}>{teamA.name}</div>
-                  <div style={{ padding: '0 32px', textAlign: 'center' }}>
-                    <div style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--primary)', fontVariantNumeric: 'tabular-nums' }}>
-                      {fixture.teamAScore || 0} – {fixture.teamBScore || 0}
-                    </div>
-                  </div>
-                  <div style={{ flex: 1, textAlign: 'left', fontSize: 'clamp(1.1rem, 4vw, 1.5rem)', fontWeight: 700 }}>{teamB.name}</div>
-                </div>
-
-                {/* Board Results Management */}
-                <div>
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
-                    <h4 style={{ fontSize: '0.875rem', textTransform: 'uppercase', color: 'var(--text-secondary)', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      <Swords size={16} /> Individual Matches
+                <div style={{ padding: '24px' }}>
+                   {/* Board Results Management */}
+                   <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+                    <h4 style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <Swords size={16} /> Board Matches
                     </h4>
-                    <button onClick={() => addManualBoard(fixture.id)} className="btn btn-primary" style={{ padding: '6px 14px', fontSize: '0.8rem' }}>
-                      <Plus size={14} /> Add Match
+                    <button onClick={() => addManualBoard(fixture.id)} className="btn btn-primary" style={{ padding: '8px 16px', fontSize: '0.8rem' }}>
+                      <Plus size={16} /> Add Match
                     </button>
                   </div>
                   
-                  <div style={{ display: 'grid', gap: '10px' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     {(fixture.boardResults || []).map((board, idx) => (
-                      <div key={board.gameId || idx} style={{ 
-                        background: 'rgba(255,255,255,0.02)', padding: '12px', borderRadius: '10px',
-                        display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(120px, 1fr))', gap: '12px', alignItems: 'center',
-                        border: '1px solid rgba(255,255,255,0.05)'
+                      <div key={board.gameId || idx} className="admin-board-item" style={{ 
+                        background: 'rgba(0,0,0,0.15)', padding: '12px', borderRadius: '12px',
+                        display: 'grid', gridTemplateColumns: '1fr 180px 1fr 40px', gap: '12px', alignItems: 'center',
+                        border: '1px solid var(--border-color)'
                       }}>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                          <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 700 }}>M{idx+1}</span>
+                        <div style={{ position: 'relative' }}>
+                          <User size={14} style={{ position: 'absolute', left: '12px', top: '12px', color: 'var(--text-secondary)' }} />
                           <select 
-                            className="input-field" style={{ fontSize: '0.85rem', padding: '6px' }}
+                            className="input-field" style={{ paddingLeft: '32px', fontSize: '0.85rem' }}
                             value={board.player1}
                             onChange={(e) => updateBoard(fixture, board.gameId, 'player1', e.target.value)}
                           >
-                            <option value="">Player A</option>
+                            <option value="">Player 1</option>
                             {allPlayers.map(p => <option key={p.id} value={p.name}>{p.name}</option>)}
                           </select>
                         </div>
 
                         <select 
-                          className="input-field" style={{ fontSize: '0.85rem', padding: '6px', textAlign: 'center', background: 'rgba(0,0,0,0.3)', fontWeight: 700, border: '1px solid var(--primary)' }}
+                          className="input-field" style={{ fontSize: '0.85rem', textAlign: 'center', fontWeight: 800, border: '1px solid var(--primary)', color: 'var(--primary)' }}
                           value={board.result}
                           onChange={(e) => updateBoard(fixture, board.gameId, 'result', e.target.value)}
                         >
-                          <option value="*">Result (TBD)</option>
-                          <option value="1-0">Win – Loss</option>
-                          <option value="0-1">Loss – Win</option>
-                          <option value="1/2-1/2">Draw</option>
+                          <option value="*">MATCHING RESULT</option>
+                          <option value="1-0">P1 WIN (2–0)</option>
+                          <option value="0-1">P2 WIN (0–2)</option>
+                          <option value="1/2-1/2">DRAW (1–1)</option>
                         </select>
 
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                        <div style={{ position: 'relative' }}>
+                          <User size={14} style={{ position: 'absolute', left: '12px', top: '12px', color: 'var(--text-secondary)' }} />
                           <select 
-                            className="input-field" style={{ fontSize: '0.85rem', padding: '6px' }}
+                            className="input-field" style={{ paddingLeft: '32px', fontSize: '0.85rem' }}
                             value={board.player2}
                             onChange={(e) => updateBoard(fixture, board.gameId, 'player2', e.target.value)}
                           >
-                            <option value="">Player B</option>
+                            <option value="">Player 2</option>
                             {allPlayers.map(p => <option key={p.id} value={p.name}>{p.name}</option>)}
                           </select>
-                          <button onClick={() => deleteBoard(fixture.id, board.gameId)} style={{ padding: '6px', color: 'var(--danger)', opacity: 0.7 }} className="btn-icon">
-                            <Trash2 size={16} />
-                          </button>
                         </div>
+
+                        <button onClick={() => deleteBoard(fixture.id, board.gameId)} className="btn-icon" style={{ color: 'var(--danger)', padding: '10px' }}>
+                          <Trash2 size={16} />
+                        </button>
                       </div>
                     ))}
                   </div>

@@ -266,3 +266,20 @@ h1, h2, h3, h4 {
 .tab-scroll::-webkit-scrollbar {
   display: none;
 }
+
+@media (max-width: 640px) {
+  .app-container {
+    padding: 16px 12px !important;
+  }
+  
+  .admin-grid {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 16px !important;
+  }
+
+  .admin-board-item {
+    grid-template-columns: 1fr !important;
+    padding: 16px !important;
+  }
+}
