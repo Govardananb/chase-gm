@@ -1,15 +1,16 @@
 import { useState } from 'react';
 import { useFirebaseSync } from '../hooks/useFirebaseSync';
 import type { Team, Player } from '../types';
-import { Trash2, UserPlus, Users, Crown, ShieldPlus, PlusCircle } from 'lucide-react';
+import { Trash2, UserPlus, Users, Crown, ShieldPlus, PlusCircle, Loader2 } from 'lucide-react';
 
 export default function TeamSetup() {
-  const [teams, setTeams] = useFirebaseSync<Team[]>('chase_gm_teams', []);
+  const [teams, setTeams, loading] = useFirebaseSync<Team[]>('chase_gm_teams', []);
   const [newTeamName, setNewTeamName] = useState('');
   const [newPlayerName, setNewPlayerName] = useState<{ [teamId: string]: string }>({});
 
   const handleCreateTeam = (e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     if (!newTeamName.trim()) return;
     
     const newTeam: Team = {
@@ -25,6 +26,7 @@ export default function TeamSetup() {
 
   const handleAddPlayer = (teamId: string, e: React.FormEvent) => {
     e.preventDefault();
+    if (loading) return;
     const pName = newPlayerName[teamId]?.trim();
     if (!pName) return;
 
@@ -44,12 +46,14 @@ export default function TeamSetup() {
   };
 
   const handleDeleteTeam = (teamId: string) => {
+    if (loading) return;
     if (confirm('Delete this team?')) {
       setTeams((teams || []).filter(t => t.id !== teamId));
     }
   };
 
   const handleDeletePlayer = (teamId: string, playerId: string) => {
+    if (loading) return;
     setTeams((teams || []).map(team => {
       if (team.id === teamId) {
         const updatedPlayers = team.players.filter(p => p.id !== playerId);
@@ -64,10 +68,20 @@ export default function TeamSetup() {
   };
 
   const setCaptain = (teamId: string, playerId: string) => {
+    if (loading) return;
     setTeams((teams || []).map(team => 
       team.id === teamId ? { ...team, captain: playerId } : team
     ));
   };
+
+  if (loading) {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '300px', gap: '16px' }}>
+        <Loader2 size={40} className="animate-spin" color="var(--primary)" />
+        <p style={{ color: 'var(--text-secondary)' }}>Hydrating Roster...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="animate-fade-in">
