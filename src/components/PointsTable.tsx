@@ -1,12 +1,10 @@
 import { useFirebaseSync } from '../hooks/useFirebaseSync';
 import type { Team, Fixture } from '../types';
-import { Trophy, Hash, Users, Activity, Award } from 'lucide-react';
+import { Trophy, Hash, Users, Activity } from 'lucide-react';
 
 interface TeamStats {
   teamId: string;
   teamName: string;
-  fixturesPlayed: number; 
-  played: number;         
   wins: number;
   draws: number;
   losses: number;
@@ -24,7 +22,7 @@ export default function PointsTable() {
     const statsMap: Record<string, TeamStats> = {};
 
     safeTeams.forEach(t => {
-      statsMap[t.id] = { teamId: t.id, teamName: t.name, fixturesPlayed: 0, played: 0, wins: 0, draws: 0, losses: 0, pts: 0 };
+      statsMap[t.id] = { teamId: t.id, teamName: t.name, wins: 0, draws: 0, losses: 0, pts: 0 };
     });
 
     safeFixtures.forEach(fixture => {
@@ -33,12 +31,6 @@ export default function PointsTable() {
       if (!teamA || !teamB) return;
 
       const boards = fixture.boardResults || [];
-      const hasPlayedAny = boards.some(b => b.result !== '*');
-      
-      if (hasPlayedAny) {
-        if (statsMap[fixture.teamAId]) statsMap[fixture.teamAId].fixturesPlayed += 1;
-        if (statsMap[fixture.teamBId]) statsMap[fixture.teamBId].fixturesPlayed += 1;
-      }
 
       boards.forEach(board => {
         if (board.result === '*') return;
@@ -48,9 +40,6 @@ export default function PointsTable() {
         if (!sA || !sB) return;
 
         const p1IsTeamA = teamA.players.some(p => p.name === board.player1);
-
-        sA.played += 1;
-        sB.played += 1;
 
         if (board.result === '1/2-1/2') {
           sA.draws += 1; sB.draws += 1;
@@ -99,9 +88,7 @@ export default function PointsTable() {
               <thead>
                 <tr>
                   <th style={{ width: '40px', textAlign: 'center' }}><Hash size={12} /></th>
-                  <th style={{ minWidth: '100px' }}><div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Users size={12} /> TEAM</div></th>
-                  <th style={{ textAlign: 'center' }} title="Matches Playes"><Award size={12} /> M</th>
-                  <th style={{ textAlign: 'center' }}>G</th>
+                  <th style={{ minWidth: '150px' }}><div style={{ display: 'flex', alignItems: 'center', gap: '6px' }}><Users size={12} /> TEAM</div></th>
                   <th style={{ textAlign: 'center', color: 'var(--success)' }}>W</th>
                   <th style={{ textAlign: 'center', color: 'var(--warning)' }}>D</th>
                   <th style={{ textAlign: 'center', color: 'var(--danger)' }}>L</th>
@@ -119,8 +106,6 @@ export default function PointsTable() {
                       <td>
                         <div style={{ fontWeight: 700, fontSize: '0.875rem' }}>{stat.teamName}</div>
                       </td>
-                      <td style={{ textAlign: 'center', color: 'var(--text-primary)', fontWeight: 600 }}>{stat.fixturesPlayed}</td>
-                      <td style={{ textAlign: 'center', color: 'var(--text-secondary)' }}>{stat.played}</td>
                       <td style={{ textAlign: 'center', color: 'var(--success)', fontWeight: 600 }}>{stat.wins}</td>
                       <td style={{ textAlign: 'center', color: 'var(--warning)', fontWeight: 600 }}>{stat.draws}</td>
                       <td style={{ textAlign: 'center', color: 'var(--danger)', fontWeight: 600 }}>{stat.losses}</td>
