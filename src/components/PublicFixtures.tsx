@@ -42,7 +42,8 @@ export default function PublicFixtures() {
               <div style={{ flex: 1, height: '1px', background: 'linear-gradient(to right, var(--border-color), transparent)' }} />
             </div>
 
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 500px), 1fr))', gap: '24px' }}>
+            <div className="responsive-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(min(100%, 500px), 1fr))', gap: '24px' }}>
+
               {setFixtures.map(fixture => {
                 const teamA = safeTeams.find(t => t.id === fixture.teamAId);
                 const teamB = safeTeams.find(t => t.id === fixture.teamBId);
