@@ -66,7 +66,7 @@ export const seededTeams: Team[] = [
 export const seededFixtures: Fixture[] = [
   {
     id: 'f1',
-    week: 1,
+    set: 1,
     teamAId: 't1',
     teamBId: 't2',
     date: '2026-04-24',
@@ -83,7 +83,7 @@ export const seededFixtures: Fixture[] = [
   },
   {
     id: 'f2',
-    week: 1,
+    set: 1,
     teamAId: 't3',
     teamBId: 't4',
     date: '2026-04-24',
@@ -100,7 +100,7 @@ export const seededFixtures: Fixture[] = [
   },
   {
     id: 'f3',
-    week: 2,
+    set: 2,
     teamAId: 't2',
     teamBId: 't5',
     date: '2026-05-01',
@@ -117,7 +117,7 @@ export const seededFixtures: Fixture[] = [
   },
   {
     id: 'f4',
-    week: 2,
+    set: 2,
     teamAId: 't1',
     teamBId: 't3',
     date: '2026-05-01',
@@ -134,7 +134,7 @@ export const seededFixtures: Fixture[] = [
   },
   {
     id: 'f5',
-    week: 3,
+    set: 3,
     teamAId: 't4',
     teamBId: 't5',
     date: '2026-05-08',
